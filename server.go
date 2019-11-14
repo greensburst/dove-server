@@ -52,7 +52,7 @@ func process(conn net.Conn) {
 	}
 }
 
-func main() {
+func main1() {
 	fmt.Println("服务器开始监听...")
 	listen, _ := net.Listen("tcp", "0.0.0.0:8888")
 	defer listen.Close()
