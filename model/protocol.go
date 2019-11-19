@@ -1,4 +1,4 @@
-package main
+package model
 
 const (
 	SIGNUP_MESSAGE = iota
