@@ -26,7 +26,6 @@ func ConnectionHandler(conn net.Conn) {
 	pkg := new(model.Package)
 	json.Unmarshal(stream, pkg) //把字节流转成数据包
 
-	proc := prc.ProcessorFactory(pkg)
-	proc.Handler()
+	prc.Processor(pkg)
 
 }
