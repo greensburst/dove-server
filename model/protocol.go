@@ -6,13 +6,9 @@ const (
 	CHAT_MESSAGE
 )
 
-type Header struct {
-	Code   int
-	Target string
-	Source string
-}
-
 type Package struct {
-	Header
-	Body string
+	Code   int    `json:"code"`
+	Target string `json:"target"`
+	Source string `json:"source"`
+	Body   string `json:"body"`
 }

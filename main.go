@@ -18,14 +18,19 @@ func main() {
 }
 
 func ConnectionHandler(conn net.Conn) {
-	defer conn.Close()
-
 	stream := make([]byte, 1024)
 	conn.Read(stream) //读取连接到stream
 
+	var i int
+	for i = 1023; i >= 0; i-- {
+		if stream[i] != 0 {
+			break
+		}
+	}
+
+	stream = stream[:i+1]
 	pkg := new(model.Package)
 	json.Unmarshal(stream, pkg) //把字节流转成数据包
-
-	prc.Processor(pkg)
+	prc.Processor(pkg, conn)
 
 }
