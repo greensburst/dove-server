@@ -4,6 +4,7 @@ import (
 	"dove-server/model"
 	"dove-server/prc"
 	"encoding/json"
+	"fmt"
 	"net"
 )
 
@@ -13,11 +14,13 @@ func main() {
 
 	for {
 		conn, _ := listener.Accept() //等待连接
-		go ConnectionHandler(conn)   //处理连接
+		go connectionHandler(conn)   //处理连接
 	}
 }
 
-func ConnectionHandler(conn net.Conn) {
+func connectionHandler(conn net.Conn) {
+	defer conn.Close()
+
 	stream := make([]byte, 1024)
 	conn.Read(stream) //读取连接到stream
 
@@ -27,10 +30,15 @@ func ConnectionHandler(conn net.Conn) {
 			break
 		}
 	}
+	stream = stream[:i+1] //删除stream多余部分
 
-	stream = stream[:i+1]
-	pkg := new(model.Package)
-	json.Unmarshal(stream, pkg) //把字节流转成数据包
-	prc.Processor(pkg, conn)
+	requestPackage := new(model.RequestPackage)
+	json.Unmarshal(stream, requestPackage) //把字节流转成数据包
 
+	processor := prc.RequestPackageFactory(requestPackage) //把数据包交给包处理工厂，拿到对应的包处理器
+	res, err := processor.Handler()                        //处理信息
+	if err != nil {
+		fmt.Println(err)
+	}
+	conn.Write(res)
 }

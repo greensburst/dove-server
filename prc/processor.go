@@ -1,25 +1,23 @@
 package prc
 
 import (
-	"dove-server/dbi"
 	"dove-server/model"
-	"net"
+	"encoding/json"
 )
 
-func Processor(pkg *model.Package, conn net.Conn) {
+type Processor interface {
+	Handler() ([]byte, error)
+}
 
-	defer conn.Close()
-	dbi := dbi.NewDataBaseInterface()
-	dbi.Stream = []byte(pkg.Body)
+func RequestPackageFactory(requestPackage *model.RequestPackage) Processor {
 
-	switch pkg.Code {
-
-	case model.SIGNUP_MESSAGE:
-		err := dbi.SignUp()
-		if err != nil {
-			conn.Write([]byte("0"))
-		} else {
-			conn.Write([]byte("1"))
-		}
+	switch requestPackage.Code {
+	case model.SignupMessage:
+		processor := new(SignupProcessor)
+		json.Unmarshal([]byte(requestPackage.Body), processor)
+		return processor
+	default:
+		return nil
 	}
+
 }
