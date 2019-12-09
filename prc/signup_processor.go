@@ -20,15 +20,19 @@ func (this *SignupProcessor) Handler() (res []byte, err error) { //注册事件�
 	db, err := sql.Open("mysql", "root:Lizhan@521@tcp(49.233.188.145:3306)/dove")
 	defer db.Close()
 	if err != nil {
-		responsePackage.Code = 501
+		responsePackage.Code = model.DatabaseError
+		res, _ = json.Marshal(responsePackage)
+		return
 	}
+
 	_, err = db.Exec("INSERT INTO users(mail, passwd, name) VALUES (?, ?, ?);", this.Mail, this.Passwd, this.Name)
 	if err != nil {
-		responsePackage.Code = 201
-	} else {
-		responsePackage.Code = 200
+		responsePackage.Code = model.MailHasCreated
+		res, _ = json.Marshal(responsePackage)
+		return
 	}
-	res, _ = json.Marshal(responsePackage)
 
+	responsePackage.Code = model.RequestSuccess
+	res, _ = json.Marshal(responsePackage)
 	return
 }

@@ -4,6 +4,12 @@ const (
 	SignupMessage = iota
 )
 
+const (
+	DatabaseError  = 501 //数据库错误
+	MailHasCreated = 401 //邮箱已被注册
+	RequestSuccess = 200 //请求成功
+)
+
 type RequestPackage struct {
 	/*
 		请求码：
