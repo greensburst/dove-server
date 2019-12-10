@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dove-server/db"
 	"dove-server/log"
 	"dove-server/model"
 	"dove-server/prc"
@@ -45,7 +46,14 @@ func connectionHandler(conn net.Conn) {
 		log.Output("error.log", err)
 	}
 
-	res, err := processor.Handler() //处理信息
+	code, err := processor.Handler(db.Pool) //处理信息
+	if err != nil {
+		log.Output("error.log", err)
+	}
+
+	responsePackage := new(model.ResponsePackage)
+	responsePackage.Code = code
+	res, err := json.Marshal(responsePackage)
 	if err != nil {
 		log.Output("error.log", err)
 	}

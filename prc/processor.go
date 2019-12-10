@@ -1,32 +1,29 @@
 package prc
 
 import (
+	"database/sql"
 	"dove-server/model"
 	"encoding/json"
-	"errors"
 )
 
 type Processor interface {
-	Handler() ([]byte, error)
+	Handler(*sql.DB) (int, error)
+}
+
+func messageFactory(code int) (processor Processor) {
+	messageMap := make(map[int]Processor)
+	messageMap[model.SignupMessage] = new(SignupProcessor)
+	messageMap[model.SigninMessage] = new(SigninProcessor)
+
+	return messageMap[code]
 }
 
 func RequestPackageFactory(requestPackage *model.RequestPackage) (processor Processor, err error) {
 
-	hasError := false
-	switch requestPackage.Code {
-	case model.SignupMessage:
-		processor = new(SignupProcessor)
-		err = json.Unmarshal([]byte(requestPackage.Body), processor)
-		if err != nil {
-			hasError = true
-		}
-	default:
-		return nil, errors.New("response package type is not founded.")
-	}
-
-	if hasError {
+	processor = messageFactory(requestPackage.Code)
+	err = json.Unmarshal([]byte(requestPackage.Body), processor)
+	if err != nil {
 		return nil, err
-	} else {
-		return processor, nil
 	}
+	return processor, nil
 }
