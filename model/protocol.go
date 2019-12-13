@@ -1,18 +1,5 @@
 package model
 
-const (
-	SignupMessage = 0
-	SigninMessage = 1
-)
-
-const (
-	ServerError    = 500 //服务器错误
-	RequestSuccess = 200 //请求成功
-	MailHasCreated = 401 //邮箱已被注册
-	AccountError   = 402 //账户错误
-	PasswdError    = 403 //密码错误
-)
-
 type RequestPackage struct {
 	/*
 		请求码：

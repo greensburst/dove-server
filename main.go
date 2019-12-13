@@ -46,13 +46,11 @@ func connectionHandler(conn net.Conn) {
 		log.Output("error.log", err)
 	}
 
-	code, err := processor.Handler(db.Pool) //处理信息
+	responsePackage, err := processor.Handler(db.Pool) //处理信息
 	if err != nil {
 		log.Output("error.log", err)
 	}
 
-	responsePackage := new(model.ResponsePackage)
-	responsePackage.Code = code
 	res, err := json.Marshal(responsePackage)
 	if err != nil {
 		log.Output("error.log", err)

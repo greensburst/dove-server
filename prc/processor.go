@@ -7,7 +7,7 @@ import (
 )
 
 type Processor interface {
-	Handler(*sql.DB) (int, error)
+	Handler(*sql.DB) (model.ResponsePackage, error)
 }
 
 func messageFactory(code int) (processor Processor) {

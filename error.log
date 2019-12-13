@@ -1,3 +1,9 @@
 
 2019/12/10 21:07:36 sql: database is closed
 2019/12/10 21:07:40 sql: database is closed
+2019/12/13 19:34:07 sql: Scan error on column index 3, name "avatar": unsupported Scan, storing driver.Value type <nil> into type *string
+2019/12/13 19:37:57 sql: Scan error on column index 3, name "avatar": unsupported Scan, storing driver.Value type <nil> into type *string
+2019/12/13 19:40:07 sql: Scan error on column index 3, name "avatar": unsupported Scan, storing driver.Value type <nil> into type *string
+2019/12/13 19:40:27 sql: Scan error on column index 3, name "avatar": destination not a pointer
+2019/12/13 19:43:29 sql: Scan error on column index 4, name "gender": sql/driver: couldn't convert <nil> (<nil>) into type bool
+2019/12/13 19:44:47 sql: Scan error on column index 4, name "gender": sql/driver: couldn't convert -1 into type bool

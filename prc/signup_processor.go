@@ -11,26 +11,26 @@ type SignupProcessor struct { //注册事件接口，该事件需要昵称邮箱
 	Passwd string `json:"passwd"`
 }
 
-func (this *SignupProcessor) Handler(db *sql.DB) (code int, err error) { //注册事件方法，添加注册信息到mysql_user表
-	// defer db.Close()
+func (this *SignupProcessor) Handler(db *sql.DB) (responsePackage model.ResponsePackage, err error) { //注册事件方法，添加注册信息到mysql_user表
 
 	data, err := db.Query("SELECT mail FROM users WHERE mail = ?;", this.Mail)
 	defer data.Close()
 
 	if err != nil {
-		code = model.ServerError
+		responsePackage.Code = model.ServerError
 		return
 	} else if data.Next() {
-		code = model.MailHasCreated
+		responsePackage.Code = model.MailHasCreated
 		return
 	}
 
-	_, err = db.Exec("INSERT INTO users(mail, passwd, name) VALUES (?, ?, ?);", this.Mail, this.Passwd, this.Name)
+	_, err = db.Exec("INSERT INTO users(mail, passwd) VALUES (?, ?);", this.Mail, this.Passwd)
+	_, err = db.Exec("INSERT INTO user_info(account,name) VALUES((SELECT account FROM users WHERE mail = ?),?);", this.Mail, this.Name)
 
 	if err != nil {
-		code = model.ServerError
+		responsePackage.Code = model.ServerError
 	} else {
-		code = model.RequestSuccess
+		responsePackage.Code = model.RequestSuccess
 	}
 	return
 }
